@@ -1,147 +1,68 @@
 package me.waleks.simplematerialgenerators;
 
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public final class SMGItems {
 
     private SMGItems() {}
 
-    public static final Category SMG_ITEM_CATEGORY = new Category(
-        new NamespacedKey(SimpleMaterialGenerators.getInstance(), "simplematerialgenerators"),
-        new CustomItem(Material.SMOOTH_STONE, "&9Simple Material Generators")
+    public static final ItemGroup SMG_ITEM_CATEGORY = new ItemGroup(
+        new NamespacedKey(SimpleMaterialGenerators.getInstance(), "simple_material_generators"),
+        namedItem(Material.SMOOTH_STONE, "&9Simple Material Generators")
     );
 
     public static final SlimefunItemStack SMG_GENERATOR_MULTIBLOCK = new SlimefunItemStack(
-        "SMG_GENERATOR_MULTIBLOCK",
-        Material.BEDROCK,
-        "&9Generator multiblock",
-        "",
-        "&dBuild any of this addon's",
-        "&dgenerators like this.",
-        "&aThey will only output to a chest",
-        "&adirectly above it."
-    );
-	
-	/*	Template for adding more generator items
-	public static final SlimefunItemStack SMG_GENERATOR_ = new SlimefunItemStack(
-		"SMG_GENERATOR_",
-		Material.,
-		"& generator",
-		"&6Rate: &e ticks",
-		"",
-		"&9&oSimpleMaterialGenerators"
-	);
-	*/
-
-    public static final SlimefunItemStack SMG_GENERATOR_COBBLESTONE = new SlimefunItemStack(
-        "SMG_GENERATOR_COBBLESTONE",
-        Material.COBBLESTONE,
-        "&7Cobblestone generator",
-        "&6Rate: &e4 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
+        "SMG_GENERATOR_MULTIBLOCK", Material.BEDROCK, "&9Generator Multiblock", "",
+        "&dBuild any generator from this addon", "&dusing this multiblock pattern.",
+        "&aGenerators output only to a chest", "&adirectly above the generator."
     );
 
-    public static final SlimefunItemStack SMG_GENERATOR_STONE_BROKEN = new SlimefunItemStack(
-        "SMG_GENERATOR_STONE_BROKEN",
-        Material.STONE,
-        "&7Stone generator &8(Broken)",
-        "&8Needs to be repaired",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
+    public static final SlimefunItemStack SMG_GENERATOR_COBBLESTONE = generator(
+        "SMG_GENERATOR_COBBLESTONE", Material.COBBLESTONE, "&7Cobblestone Generator", 4);
+    public static final SlimefunItemStack SMG_GENERATOR_STONE_BROKEN = broken(
+        "SMG_GENERATOR_STONE_BROKEN", Material.STONE, "&7Stone Generator");
+    public static final SlimefunItemStack SMG_GENERATOR_STONE = generator(
+        "SMG_GENERATOR_STONE", Material.STONE, "&7Stone Generator", 8);
+    public static final SlimefunItemStack SMG_GENERATOR_SMOOTH_STONE_BROKEN = broken(
+        "SMG_GENERATOR_SMOOTH_STONE_BROKEN", Material.SMOOTH_STONE, "&7Smooth Stone Generator");
+    public static final SlimefunItemStack SMG_GENERATOR_SMOOTH_STONE = generator(
+        "SMG_GENERATOR_SMOOTH_STONE", Material.SMOOTH_STONE, "&7Smooth Stone Generator", 12);
+    public static final SlimefunItemStack SMG_GENERATOR_GRAVEL_BROKEN = broken(
+        "SMG_GENERATOR_GRAVEL_BROKEN", Material.GRAVEL, "&7Gravel Generator");
+    public static final SlimefunItemStack SMG_GENERATOR_GRAVEL = generator(
+        "SMG_GENERATOR_GRAVEL", Material.ANDESITE, "&7Gravel Generator", 6);
+    public static final SlimefunItemStack SMG_GENERATOR_SAND_BROKEN = broken(
+        "SMG_GENERATOR_SAND_BROKEN", Material.SAND, "&eSand Generator");
+    public static final SlimefunItemStack SMG_GENERATOR_SAND = generator(
+        "SMG_GENERATOR_SAND", Material.SANDSTONE, "&eSand Generator", 8);
+    public static final SlimefunItemStack SMG_GENERATOR_GLASS = generator(
+        "SMG_GENERATOR_GLASS", Material.GLASS, "&fGlass Generator", 12);
+    public static final SlimefunItemStack SMG_GENERATOR_NETHERRACK = generator(
+        "SMG_GENERATOR_NETHERRACK", Material.NETHERRACK, "&cNetherrack Generator", 6);
+    public static final SlimefunItemStack SMG_GENERATOR_SOUL_SAND = generator(
+        "SMG_GENERATOR_SOUL_SAND", Material.SOUL_SAND, "&8Soul Sand Generator", 8);
 
-    public static final SlimefunItemStack SMG_GENERATOR_STONE = new SlimefunItemStack(
-        "SMG_GENERATOR_STONE",
-        Material.STONE,
-        "&7Stone generator",
-        "&6Rate: &e8 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
+    private static SlimefunItemStack generator(String id, Material material, String name, int ticks) {
+        return new SlimefunItemStack(id, material, name, "&6Rate: &e" + ticks + " ticks", "", "&9&oSimpleMaterialGenerators");
+    }
 
-    public static final SlimefunItemStack SMG_GENERATOR_SMOOTH_STONE_BROKEN = new SlimefunItemStack(
-        "SMG_GENERATOR_SMOOTH_STONE_BROKEN",
-        Material.SMOOTH_STONE,
-        "&7Smooth stone generator &8(Broken)",
-        "&8Needs to be repaired",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
+    private static SlimefunItemStack broken(String id, Material material, String name) {
+        return new SlimefunItemStack(id, material, name + " &8(Broken)", "&8Needs to be repaired", "", "&9&oSimpleMaterialGenerators");
+    }
 
-    public static final SlimefunItemStack SMG_GENERATOR_SMOOTH_STONE = new SlimefunItemStack(
-        "SMG_GENERATOR_SMOOTH_STONE",
-        Material.SMOOTH_STONE,
-        "&7Smooth stone generator",
-        "&6Rate: &e12 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_GRAVEL_BROKEN = new SlimefunItemStack(
-        "SMG_GENERATOR_GRAVEL_BROKEN",
-        Material.GRAVEL,
-        "&7Gravel generator &8(Broken)",
-        "&8Needs to be repaired",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_GRAVEL = new SlimefunItemStack(
-        "SMG_GENERATOR_GRAVEL",
-        Material.ANDESITE,
-        "&7Gravel generator",
-        "&6Rate: &e6 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_SAND_BROKEN = new SlimefunItemStack(
-        "SMG_GENERATOR_SAND_BROKEN",
-        Material.SAND,
-        "&eSand generator &8(Broken)",
-        "&8Needs to be repaired",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_SAND = new SlimefunItemStack(
-        "SMG_GENERATOR_SAND",
-        Material.SANDSTONE,
-        "&eSand generator",
-        "&6Rate: &e8 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_GLASS = new SlimefunItemStack(
-        "SMG_GENERATOR_GLASS",
-        Material.GLASS,
-        "&fGlass generator",
-        "&6Rate: &e12 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_NETHERRACK = new SlimefunItemStack(
-        "SMG_GENERATOR_NETHERRACK",
-        Material.NETHERRACK,
-        "&cNetherrack generator",
-        "&6Rate: &e6 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
-
-    public static final SlimefunItemStack SMG_GENERATOR_SOUL_SAND = new SlimefunItemStack(
-        "SMG_GENERATOR_SOUL_SAND",
-        Material.SOUL_SAND,
-        "&8Soul sand generator",
-        "&6Rate: &e8 ticks",
-        "",
-        "&9&oSimpleMaterialGenerators"
-    );
+    private static ItemStack namedItem(Material material, String name) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
 }

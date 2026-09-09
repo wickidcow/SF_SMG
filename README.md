@@ -1,20 +1,35 @@
-# Info
-SimpleMaterialGenerators (SMG for short) is a Slimefun4 addon that helps aliviate some of the grind by providing simple generators that create simple materials.<br>
+# SF_SMG
 
-## What it adds
-Currently it adds generators for:<br>
-Cobblestone, Stone, Smooth stone, Gravel, Sand, Glass, Netherrack and Soul sand<br>
+Maintained SimpleMaterialGenerators fork for modern Slimefun servers.
 
-## Using the generators
-The generators by themselves will do nothing - at least not until they have a chest (directly) above them.<br>
-(There's a multiblock example in the SMG category).<br>
-Then they will start producing items.<br>
-The `Rate` of their production is measured in Slimefun `Ticks`.<br>
+SMG adds compact passive generators for common building materials. Generators output into a chest directly above the machine and retain the original progression through broken and repaired generator tiers.
 
-## Downloads
-You can find the prebuilt plugin in:<br>
-https://thebusybiscuit.github.io/builds/waleks647/SMG/master<br>
+## Compatibility
 
-## Plans
-There are plans to add more generators in the future (once I figure out how to do it)<br>
-Namely generators for Dirt, Water, Lava, Obsidian and dusts.<br>
+Primary Slimefun targets:
+- Slimefun Legacy
+- Slimefun United
+
+Additional compatibility targets:
+- SlimefunGuguProject/Slimefun4
+- Original Slimefun4-compatible API implementations
+
+Server software:
+- Paper
+- Purpur
+- Folia
+- Leaf
+
+Minecraft target: **1.21.11+**. Builds use Java 25 with Java 21 bytecode.
+
+The maintained fork removes the old direct CS-CoreLib dependency and ports item groups, recipes and item classes to the current Slimefun API. The remaining BlockTicker compatibility interface is supplied by Slimefun itself so the addon can stay usable across both modern and older-compatible Slimefun forks.
+
+Generator state uses a concurrent location-keyed progress map so separate Folia regions cannot race the shared progress store.
+
+## Dependency policy
+
+This addon does not depend on GuizhanLib and contains no GuizhanLib API usage. Gugu support comes through the common Slimefun addon API.
+
+## Maintenance
+
+Original project by waleks. Modern maintenance and compatibility work are provided by `wickidcow`.
