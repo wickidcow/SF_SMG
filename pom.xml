@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.wickidcow</groupId>
     <artifactId>SF_SMG</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>SF_SMG</name>
     <description>Maintained SimpleMaterialGenerators addon for Slimefun Legacy on modern Paper servers.</description>
     <url>https://github.com/wickidcow/SF_SMG</url>
