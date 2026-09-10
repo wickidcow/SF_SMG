@@ -5,6 +5,16 @@
     <groupId>io.github.wickidcow</groupId>
     <artifactId>SF_SMG</artifactId>
     <version>1.0.1</version>
+    <name>SF_SMG</name>
+    <description>Maintained SimpleMaterialGenerators addon for Slimefun Legacy on modern Paper servers.</description>
+    <url>https://github.com/wickidcow/SF_SMG</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License v3.0</name>
+            <url>https://github.com/wickidcow/Slimefun-Legacy/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
