@@ -7,6 +7,8 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.waleks.simplematerialgenerators.SimpleMaterialGenerators;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -35,15 +37,8 @@ public class MaterialGenerator extends SlimefunItem {
     private ItemStack output;
 
     @ParametersAreNonnullByDefault
-    public MaterialGenerator(
-        SimpleMaterialGenerators plugin,
-        ItemGroup itemGroup,
-        SlimefunItemStack item,
-        RecipeType recipeType,
-        ItemStack[] recipe,
-        int defaultRate,
-        String configKey
-    ) {
+    public MaterialGenerator(SimpleMaterialGenerators plugin, ItemGroup itemGroup, SlimefunItemStack item,
+                             RecipeType recipeType, ItemStack[] recipe, int defaultRate, String configKey) {
         super(itemGroup, item, recipeType, recipe);
         this.plugin = plugin;
         this.configKey = configKey;
@@ -76,8 +71,7 @@ public class MaterialGenerator extends SlimefunItem {
             return;
         }
 
-        Block targetBlock = block.getRelative(BlockFace.UP);
-        BlockState state = targetBlock.getState();
+        BlockState state = block.getRelative(BlockFace.UP).getState();
         if (!(state instanceof InventoryHolder holder)) {
             GENERATOR_PROGRESS.remove(key);
             return;
@@ -89,12 +83,9 @@ public class MaterialGenerator extends SlimefunItem {
             return;
         }
 
-        ItemStack generated = output.clone();
-        if (inventory.addItem(generated).isEmpty()) {
+        if (inventory.addItem(output.clone()).isEmpty()) {
             GENERATOR_PROGRESS.put(key, 0);
         } else {
-            // Preserve progress while output is blocked. This keeps the working MODIFIED
-            // behavior for any InventoryHolder above the generator without busy-spamming output.
             GENERATOR_PROGRESS.put(key, rate);
         }
     }
@@ -114,6 +105,23 @@ public class MaterialGenerator extends SlimefunItem {
         for (MaterialGenerator generator : GENERATORS) {
             generator.refreshSettings();
         }
+    }
+
+    public static void clearProgress(Block block) {
+        GENERATOR_PROGRESS.remove(BlockKey.of(block));
+    }
+
+    public static void clearProgress(Chunk chunk) {
+        UUID world = chunk.getWorld().getUID();
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+        GENERATOR_PROGRESS.keySet().removeIf(key -> key.world.equals(world)
+            && (key.x >> 4) == chunkX && (key.z >> 4) == chunkZ);
+    }
+
+    public static void clearProgress(World world) {
+        UUID worldId = world.getUID();
+        GENERATOR_PROGRESS.keySet().removeIf(key -> key.world.equals(worldId));
     }
 
     public static void clearAllProgress() {
