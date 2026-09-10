@@ -28,7 +28,7 @@ Generator state uses a concurrent location-keyed progress map so separate Folia 
 
 ## Dependency policy
 
-This addon does not depend on GuizhanLib and contains no GuizhanLib API usage. Gugu support comes through the common Slimefun addon API.
+This maintained fork avoids external Slimefun utility-library dependencies. Gugu support comes only through the common Slimefun addon API.
 
 ## Maintenance
 
