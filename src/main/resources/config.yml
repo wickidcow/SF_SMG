@@ -1,2 +1,44 @@
+# SimpleMaterialGenerators configuration
+# Changes to enabled/rate values become active immediately after /smg reload.
+# Guide lore is rebuilt on server restart.
+
 options:
-  auto-update: true
+  auto-update: false
+
+generators:
+  cobblestone: {enabled: true, rate: 4}
+  stone: {enabled: true, rate: 8}
+  wood: {enabled: true, rate: 100}
+  smooth-stone: {enabled: true, rate: 12}
+  gravel: {enabled: true, rate: 6}
+  sand: {enabled: true, rate: 8}
+  glass: {enabled: true, rate: 12}
+  netherrack: {enabled: true, rate: 6}
+  soul-sand: {enabled: true, rate: 8}
+  andesite: {enabled: true, rate: 60}
+  diorite: {enabled: true, rate: 60}
+  granite: {enabled: true, rate: 60}
+  coal: {enabled: true, rate: 200}
+  iron: {enabled: true, rate: 250}
+  gold: {enabled: true, rate: 300}
+  redstone: {enabled: true, rate: 250}
+  lapis: {enabled: true, rate: 250}
+  diamond: {enabled: true, rate: 900}
+  emerald: {enabled: true, rate: 1200}
+  quartz: {enabled: true, rate: 300}
+  endstone: {enabled: true, rate: 200}
+  obsidian: {enabled: true, rate: 400}
+  clay: {enabled: true, rate: 70}
+  blaze-rod: {enabled: true, rate: 1000}
+  ghast-tear: {enabled: true, rate: 1600}
+  ender-pearl: {enabled: true, rate: 800}
+  bone: {enabled: true, rate: 200}
+
+  # Modern Minecraft additions.
+  copper: {enabled: true, rate: 275}
+  tuff: {enabled: true, rate: 60}
+  calcite: {enabled: true, rate: 90}
+  dripstone: {enabled: true, rate: 100}
+  resin: {enabled: true, rate: 200}
+  sulfur: {enabled: true, rate: 180}
+  cinnabar: {enabled: true, rate: 240}
