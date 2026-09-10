@@ -6,7 +6,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import org.bukkit.Material;
+import me.waleks.simplematerialgenerators.SimpleMaterialGenerators;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -16,20 +16,40 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MaterialGenerator extends SlimefunItem {
 
     private static final ConcurrentMap<BlockKey, Integer> GENERATOR_PROGRESS = new ConcurrentHashMap<>();
+    private static final List<MaterialGenerator> GENERATORS = new CopyOnWriteArrayList<>();
 
-    private int rate = 2;
+    private final SimpleMaterialGenerators plugin;
+    private final String configKey;
+    private final int defaultRate;
+    private volatile int rate;
+    private volatile boolean enabled;
     private ItemStack output;
 
     @ParametersAreNonnullByDefault
-    public MaterialGenerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public MaterialGenerator(
+        SimpleMaterialGenerators plugin,
+        ItemGroup itemGroup,
+        SlimefunItemStack item,
+        RecipeType recipeType,
+        ItemStack[] recipe,
+        int defaultRate,
+        String configKey
+    ) {
         super(itemGroup, item, recipeType, recipe);
+        this.plugin = plugin;
+        this.configKey = configKey;
+        this.defaultRate = Math.max(defaultRate, 2);
+        refreshSettings();
+        GENERATORS.add(this);
     }
 
     @Override
@@ -50,38 +70,54 @@ public class MaterialGenerator extends SlimefunItem {
     }
 
     public void tick(@Nonnull Block block) {
-        Block targetBlock = block.getRelative(BlockFace.UP);
-        if (targetBlock.getType() != Material.CHEST) {
-            GENERATOR_PROGRESS.remove(BlockKey.of(block));
+        BlockKey key = BlockKey.of(block);
+        if (!enabled || output == null) {
+            GENERATOR_PROGRESS.remove(key);
             return;
         }
 
+        Block targetBlock = block.getRelative(BlockFace.UP);
         BlockState state = targetBlock.getState();
         if (!(state instanceof InventoryHolder holder)) {
+            GENERATOR_PROGRESS.remove(key);
             return;
         }
 
         Inventory inventory = holder.getInventory();
-        if (inventory.firstEmpty() == -1 || output == null) {
+        int progress = GENERATOR_PROGRESS.merge(key, 1, Integer::sum);
+        if (progress < rate) {
             return;
         }
 
-        BlockKey key = BlockKey.of(block);
-        int progress = GENERATOR_PROGRESS.merge(key, 1, Integer::sum);
-        if (progress >= rate) {
+        ItemStack generated = output.clone();
+        if (inventory.addItem(generated).isEmpty()) {
             GENERATOR_PROGRESS.put(key, 0);
-            inventory.addItem(output.clone());
+        } else {
+            // Preserve progress while output is blocked. This keeps the working MODIFIED
+            // behavior for any InventoryHolder above the generator without busy-spamming output.
+            GENERATOR_PROGRESS.put(key, rate);
         }
     }
 
-    public final MaterialGenerator setItem(@Nonnull Material material) {
-        this.output = new ItemStack(material);
+    public final MaterialGenerator setItem(@Nonnull ItemStack item) {
+        this.output = item.clone();
         return this;
     }
 
-    public final MaterialGenerator setRate(int rateTicks) {
-        this.rate = Math.max(rateTicks, 2);
-        return this;
+    public final void refreshSettings() {
+        String path = "generators." + configKey;
+        enabled = plugin.getConfig().getBoolean(path + ".enabled", true);
+        rate = Math.max(plugin.getConfig().getInt(path + ".rate", defaultRate), 2);
+    }
+
+    public static void refreshAll() {
+        for (MaterialGenerator generator : GENERATORS) {
+            generator.refreshSettings();
+        }
+    }
+
+    public static void clearAllProgress() {
+        GENERATOR_PROGRESS.clear();
     }
 
     private record BlockKey(UUID world, int x, int y, int z) {
