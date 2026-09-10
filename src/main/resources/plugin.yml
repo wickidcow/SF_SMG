@@ -1,7 +1,7 @@
 name: SimpleMaterialGenerators
 version: ${project.version}
 authors: [waleks, wickidcow]
-description: Lightweight Slimefun material generators for Minecraft 1.21.11+ with Legacy-first compatibility across current Slimefun forks.
+description: Maintained SimpleMaterialGenerators addon for Slimefun Legacy on Minecraft 1.21.11+ and modern Paper-family servers.
 main: me.waleks.simplematerialgenerators.SimpleMaterialGenerators
 website: https://github.com/wickidcow/SF_SMG
 api-version: '1.21'
