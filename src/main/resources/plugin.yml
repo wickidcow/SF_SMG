@@ -1,9 +1,18 @@
 name: SimpleMaterialGenerators
 version: ${project.version}
 authors: [waleks, wickidcow]
-description: Maintained SimpleMaterialGenerators addon for Slimefun Legacy on Minecraft 1.21.11+ and modern Paper-family servers.
+description: Maintained SimpleMaterialGenerators addon for Slimefun Legacy with the Albion MODIFIED generator set and modern Minecraft materials.
 main: me.waleks.simplematerialgenerators.SimpleMaterialGenerators
 website: https://github.com/wickidcow/SF_SMG
 api-version: '1.21'
 folia-supported: true
 depend: [Slimefun]
+commands:
+  smg:
+    description: SimpleMaterialGenerators administration command.
+    usage: /<command> reload
+    permission: smg.reload
+permissions:
+  smg.reload:
+    description: Reloads SMG generator enable/rate settings.
+    default: op
