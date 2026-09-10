@@ -1,6 +1,9 @@
 package me.waleks.simplematerialgenerators;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import me.waleks.simplematerialgenerators.commands.SMGReloadCommand;
+import me.waleks.simplematerialgenerators.items.MaterialGenerator;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nonnull;
@@ -15,10 +18,23 @@ public class SimpleMaterialGenerators extends JavaPlugin implements SlimefunAddo
         setInstance(this);
         saveDefaultConfig();
         SMGItemSetup.setup(this);
+
+        PluginCommand command = getCommand("smg");
+        if (command != null) {
+            command.setExecutor(new SMGReloadCommand(this));
+        } else {
+            getLogger().warning("The /smg command is missing from plugin.yml.");
+        }
+    }
+
+    public void safeReloadConfig() {
+        reloadConfig();
+        MaterialGenerator.refreshAll();
     }
 
     @Override
     public void onDisable() {
+        MaterialGenerator.clearAllProgress();
         setInstance(null);
     }
 
@@ -36,6 +52,9 @@ public class SimpleMaterialGenerators extends JavaPlugin implements SlimefunAddo
 
     @Nonnull
     public static SimpleMaterialGenerators getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("SimpleMaterialGenerators has not finished enabling.");
+        }
         return instance;
     }
 
