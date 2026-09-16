@@ -115,8 +115,17 @@ public final class SMGItemSetup {
         legacy(plugin, SMGItems.SMG_GENERATOR_CALCITE, Material.CALCITE, Material.CALCITE, 90, "calcite", core);
         legacy(plugin, SMGItems.SMG_GENERATOR_DRIPSTONE, Material.DRIPSTONE_BLOCK, Material.POINTED_DRIPSTONE, 100, "dripstone", core);
         legacy(plugin, SMGItems.SMG_GENERATOR_RESIN, Material.RESIN_BLOCK, Material.RESIN_CLUMP, 200, "resin", core);
-        legacy(plugin, SMGItems.SMG_GENERATOR_SULFUR, Material.SULFUR, Material.SULFUR, 180, "sulfur", core);
-        legacy(plugin, SMGItems.SMG_GENERATOR_CINNABAR, Material.CINNABAR, Material.CINNABAR, 240, "cinnabar", core);
+        registerOptionalModernGenerator(plugin, SMGItems.SMG_GENERATOR_SULFUR, "SULFUR", 180, "sulfur", core);
+        registerOptionalModernGenerator(plugin, SMGItems.SMG_GENERATOR_CINNABAR, "CINNABAR", 240, "cinnabar", core);
+    }
+
+    private static void registerOptionalModernGenerator(SimpleMaterialGenerators plugin, SlimefunItemStack item, String materialName, int rate, String key, SlimefunItemStack core) {
+        Material material = Material.getMaterial(materialName);
+        if (material == null) {
+            plugin.getLogger().info("[SMG] " + materialName + " is not available on this Minecraft version; skipping its generator.");
+            return;
+        }
+        legacy(plugin, item, material, material, rate, key, core);
     }
 
     private static void legacy(SimpleMaterialGenerators plugin, SlimefunItemStack item, Material ingredient, Material output, int rate, String key, SlimefunItemStack core) {
