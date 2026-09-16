@@ -57,18 +57,24 @@ public final class SMGItems {
     public static final SlimefunItemStack SMG_GENERATOR_BONE = generator("SMG_GENERATOR_BONE", Material.BONE_BLOCK, "&fBone Generator", "bone", 200);
     public static final SlimefunItemStack SMG_BROKEN_GENERATOR = broken("SMG_BROKEN_GENERATOR", Material.CRACKED_STONE_BRICKS, "&8Broken Generator");
 
-    // New modern-Minecraft generators. These use new IDs and do not replace legacy content.
+    // New modern-Minecraft generators. Newer materials are resolved by name so the
+    // same Java 21 JAR can still load on the 1.21.11 compatibility floor.
     public static final SlimefunItemStack SMG_GENERATOR_WOOD = generator("SMG_GENERATOR_WOOD", Material.OAK_LOG, "&6Wood Generator", "wood", 100);
     public static final SlimefunItemStack SMG_GENERATOR_COPPER = generator("SMG_GENERATOR_COPPER", Material.COPPER_BLOCK, "&6Copper Generator", "copper", 275);
     public static final SlimefunItemStack SMG_GENERATOR_TUFF = generator("SMG_GENERATOR_TUFF", Material.TUFF, "&7Tuff Generator", "tuff", 60);
     public static final SlimefunItemStack SMG_GENERATOR_CALCITE = generator("SMG_GENERATOR_CALCITE", Material.CALCITE, "&fCalcite Generator", "calcite", 90);
     public static final SlimefunItemStack SMG_GENERATOR_DRIPSTONE = generator("SMG_GENERATOR_DRIPSTONE", Material.DRIPSTONE_BLOCK, "&6Dripstone Generator", "dripstone", 100);
     public static final SlimefunItemStack SMG_GENERATOR_RESIN = generator("SMG_GENERATOR_RESIN", Material.RESIN_BLOCK, "&6Resin Generator", "resin", 200);
-    public static final SlimefunItemStack SMG_GENERATOR_SULFUR = generator("SMG_GENERATOR_SULFUR", Material.SULFUR, "&eSulfur Generator", "sulfur", 180);
-    public static final SlimefunItemStack SMG_GENERATOR_CINNABAR = generator("SMG_GENERATOR_CINNABAR", Material.CINNABAR, "&cCinnabar Generator", "cinnabar", 240);
+    public static final SlimefunItemStack SMG_GENERATOR_SULFUR = generator("SMG_GENERATOR_SULFUR", optionalMaterial("SULFUR", Material.GUNPOWDER), "&eSulfur Generator", "sulfur", 180);
+    public static final SlimefunItemStack SMG_GENERATOR_CINNABAR = generator("SMG_GENERATOR_CINNABAR", optionalMaterial("CINNABAR", Material.REDSTONE), "&cCinnabar Generator", "cinnabar", 240);
 
     public static int configuredRate(String key, int defaultRate) {
         return Math.max(SimpleMaterialGenerators.getInstance().getConfig().getInt("generators." + key + ".rate", defaultRate), 2);
+    }
+
+    public static Material optionalMaterial(String name, Material fallback) {
+        Material material = Material.getMaterial(name);
+        return material != null ? material : fallback;
     }
 
     private static SlimefunItemStack generator(String id, Material material, String name, String key, int defaultRate) {
