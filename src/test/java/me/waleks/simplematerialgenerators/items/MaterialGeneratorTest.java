@@ -3,9 +3,11 @@ package me.waleks.simplematerialgenerators.items;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import me.waleks.simplematerialgenerators.SimpleMaterialGenerators;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -19,18 +21,27 @@ import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
-/** Real generator tick/cleanup methods with a mocked plugin boundary and Bukkit test world. */
+/** Real generator tick/cleanup methods with mocked core/plugin services and a Bukkit test world. */
 class MaterialGeneratorTest {
     private ServerMock server;
     private YamlConfiguration config;
     private MaterialGenerator generator;
     private Block block;
+    private MockedStatic<Slimefun> core;
 
     @BeforeEach void setUp() {
         server = MockBukkit.mock();
+        // RecipeType's static vanilla/Slimefun display items require core identity services.
+        // These services are not the generator, inventory, progress map or tick implementation.
+        core = mockStatic(Slimefun.class, RETURNS_DEEP_STUBS);
+        Slimefun corePlugin = mock(Slimefun.class);
+        when(corePlugin.namespace()).thenReturn("slimefun");
+        core.when(Slimefun::instance).thenReturn(corePlugin);
+        core.when(Slimefun::getMinecraftVersion).thenReturn(MinecraftVersion.UNIT_TEST);
         var plugin = mock(SimpleMaterialGenerators.class);
         config = new YamlConfiguration();
         when(plugin.getConfig()).thenReturn(config);
@@ -44,7 +55,11 @@ class MaterialGeneratorTest {
         MaterialGenerator.clearAllProgress();
     }
 
-    @AfterEach void tearDown() { MaterialGenerator.clearAllProgress(); MockBukkit.unmock(); }
+    @AfterEach void tearDown() {
+        MaterialGenerator.clearAllProgress();
+        if (core != null) core.close();
+        MockBukkit.unmock();
+    }
 
     private Inventory target(Block source) {
         return ((InventoryHolder) source.getRelative(BlockFace.UP).getState()).getInventory();
