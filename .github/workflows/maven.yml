@@ -14,7 +14,7 @@ env:
   ARTIFACT_VERSION: "1.0.4"
   OUTPUT_NAME: "SF_SMG1.0.4.jar"
   MAIN_CLASS: "me.waleks.simplematerialgenerators.SimpleMaterialGenerators"
-  SLIMEFUN_LEGACY_VERSION: "4.1.48"
+  SLIMEFUN_LEGACY_VERSION: "4.1.61"
 
 concurrency:
   group: sf-smg-${{ github.workflow }}-${{ github.ref }}
