@@ -4,7 +4,7 @@ authors: [waleks, wickidcow]
 description: Maintained SimpleMaterialGenerators addon for Slimefun Legacy with the Albion MODIFIED generator set and modern Minecraft materials.
 main: me.waleks.simplematerialgenerators.SimpleMaterialGenerators
 website: https://github.com/wickidcow/SF_SMG
-api-version: '1.21'
+api-version: '1.21.11'
 folia-supported: true
 depend: [Slimefun]
 commands:
