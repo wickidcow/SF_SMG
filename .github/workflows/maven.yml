@@ -24,6 +24,8 @@ jobs:
           persist-credentials: false
       - name: Verify immutable release contract
         run: python3 -m unittest discover -s scripts -p 'test_immutable_release_policy.py' -v
+      - name: Verify stable Paper 26.3 source compatibility policy
+        run: python3 -m unittest discover -s scripts -p 'test_stable_paper_compile_policy.py' -v
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -43,7 +45,7 @@ jobs:
       - name: Compile supported Paper API lines
         run: |
           set -euo pipefail
-          for API in 1.21.11-R0.1-SNAPSHOT 26.2.build.112-stable 26.3.build.140-beta; do
+          for API in 1.21.11-R0.1-SNAPSHOT 26.2.build.112-stable "[26.3.build,26.4.build)"; do
             mvn -B -ntp -DskipTests "-Dpaper.version=$API" clean package
           done
       - name: Full baseline tests and independent reproducible build
