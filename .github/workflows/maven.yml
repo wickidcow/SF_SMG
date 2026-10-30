@@ -22,6 +22,8 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Verify immutable release contract
+        run: python3 -m unittest discover -s scripts -p 'test_immutable_release_policy.py' -v
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -88,22 +90,18 @@ jobs:
           path: dist/${{ env.OUTPUT_NAME }}
           archive: false
           if-no-files-found: error
-      - name: Publish immutable new release
-        if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') || github.ref_name == github.event.repository.default_branch
+      - name: Publish distinct immutable version tag only
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           TAG="v${ARTIFACT_VERSION}"
-          if [[ "$GITHUB_REF" == refs/tags/* ]]; then test "$GITHUB_REF_NAME" = "$TAG"; fi
-          EXPECTED="sha256:$(sha256sum "dist/$OUTPUT_NAME" | awk '{print $1}')"
+          test "$GITHUB_REF" = "refs/tags/${TAG}"
+          JAR="dist/${OUTPUT_NAME}"
+          test -s "$JAR"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            EXISTING="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --jq ".assets[] | select(.name == \"$OUTPUT_NAME\") | .digest")"
-            if [[ -n "$EXISTING" ]]; then
-              test "$EXISTING" = "$EXPECTED" || { echo 'Published bytes differ; use a new version.' >&2; exit 1; }
-            else
-              gh release upload "$TAG" "dist/$OUTPUT_NAME" --repo "$GITHUB_REPOSITORY"
-            fi
-          else
-            gh release create "$TAG" "dist/$OUTPUT_NAME" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "SimpleMaterialGenerators $ARTIFACT_VERSION" --notes 'Publishes the previously merged presentation/API cleanup under a new immutable version. Eleven generator regressions protect configured cadence, inventory-full retry, template metadata, negative-coordinate cleanup and world isolation. Existing generator IDs, recipes, output quantities and rates are unchanged. Paper26.3 is primary with the1.21.11/Java21 baseline retained. Mocks are not a populated-world or Folia certificate.'
+            echo "Existing release $TAG is immutable; refuse reupload or republish." >&2
+            exit 1
           fi
+          gh release create "$TAG" "$JAR" --verify-tag --repo "$GITHUB_REPOSITORY" --title "SimpleMaterialGenerators $ARTIFACT_VERSION" --notes 'Publishes the previously merged presentation/API cleanup under a new immutable version. Eleven generator regressions protect configured cadence, inventory-full retry, template metadata, negative-coordinate cleanup and world isolation. Existing generator IDs, recipes, output quantities and rates are unchanged. Paper26.3 is primary with the1.21.11/Java21 baseline retained. Mocks are not a populated-world or Folia certificate.'
